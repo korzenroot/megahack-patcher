@@ -18,10 +18,10 @@ if __name__ == "__main__":
             return True
         return False
 
-    with urllib.request.urlopen(urllib.request.Request("https://absolllute.com/api/mega_hack/v9/install.json", headers = {"User-Agent": ""})) as install_json:
+    with urllib.request.urlopen(urllib.request.Request("https://absolllute.com/api/mega_hack/v9/install.json", headers={"User-Agent": ""})) as install_json:
         version = next(bundle["version"] for package in json.load(install_json)["packages"] for bundle in package["bundles"] if bundle.get("geode"))
     print(f"- Downloading Mega Hack {version} -")
-    with zipfile.ZipFile(io.BytesIO(urllib.request.urlopen(urllib.request.Request(f"https://absolllute.com/api/mega_hack/v9/files/{version}/absolllute.megahack.geode", headers = {"User-Agent": ""})).read()), "r") as original_zipfile, zipfile.ZipFile("absolllute.megahack.geode", "w") as patched_zipfile:
+    with zipfile.ZipFile(io.BytesIO(urllib.request.urlopen(urllib.request.Request(f"https://absolllute.com/api/mega_hack/v9/files/{version}/absolllute.megahack.geode", headers={"User-Agent": ""})).read()), "r") as original_zipfile, zipfile.ZipFile("absolllute.megahack.geode", "w") as patched_zipfile:
         print(f"Downloaded Mega Hack {version}")
         for name in original_zipfile.namelist():
             if name == "absolllute.megahack.dll":
@@ -53,26 +53,21 @@ if __name__ == "__main__":
                 patched_zipfile.writestr(name, original_zipfile.read(name))
 
     print("\n- Creating license -")
-    with open("license", "w") as license_file:
-        license_file.write(json.dumps({"data": base64.b64encode(json.dumps({"id": "", "guid2": "0E841FA5BFE5CE8FC91EB11ADD1DCEF694045BEEAFCF521BF4341D3997C1C219"}).encode()).decode(), "sig": "", "token": ""}))
+    #json.dumps({"data": base64.b64encode(json.dumps({"id": "", "guid2": "0E841FA5BFE5CE8FC91EB11ADD1DCEF694045BEEAFCF521BF4341D3997C1C219"}).encode()).decode(), "sig": "", "token": ""})
+    with open("license", "wb") as license_file:
+        license_file.write(b'{"data":"eyJpZCI6ICIiLCAiZ3VpZDIiOiAiMEU4NDFGQTVCRkU1Q0U4RkM5MUVCMTFBREQxRENFRjY5NDA0NUJFRUFGQ0Y1MjFCRjQzNDFEMzk5N0MxQzIxOSJ9","sig":"","token":""}')
         print("Created license")
 
     if "--install" in sys.argv:
         print(f"\n- Installing patched Mega Hack {version} -")
-        geometrydash_exe_path = next(Path.home().rglob("GeometryDash.exe"), None)
-        if geometrydash_exe_path:
+        for geometrydash_exe_path in Path.home().rglob("GeometryDash.exe"):
             geode_mods_path = geometrydash_exe_path.parent / "geode" / "mods"
-            geode_mods_path.mkdir(exist_ok = True)
+            geode_mods_path.mkdir(parents=True, exist_ok=True)
             shutil.copy("absolllute.megahack.geode", geode_mods_path)
             print(f"Copied patched Mega Hack {version} to {geode_mods_path}")
-        else:
-            print("Failed to find GeometryDash.exe")
 
-        appdata_local_geometrydash_path = next(Path.home().rglob("AppData/Local/GeometryDash"), None)
-        if appdata_local_geometrydash_path:
+        for appdata_local_geometrydash_path in Path.home().rglob("AppData/Local/GeometryDash"):
             absolllute_megahack_path = appdata_local_geometrydash_path.parent / "absolllute.megahack"
-            absolllute_megahack_path.mkdir(exist_ok = True)
+            absolllute_megahack_path.mkdir(parents=True, exist_ok=True)
             shutil.copy("license", absolllute_megahack_path)
             print(f"Copied license to {absolllute_megahack_path}")
-        else:
-            print("Failed to find AppData/Local/GeometryDash")
