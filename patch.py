@@ -4,7 +4,6 @@ import urllib.request
 import json
 import zipfile
 import io
-import base64
 import sys
 from pathlib import Path
 import shutil
@@ -19,8 +18,11 @@ if __name__ == "__main__":
         data[start:start + len(patch)] = patch
         print(f"0x{start:X} patched with {patch.hex().upper()}")
 
-    with urllib.request.urlopen(urllib.request.Request("https://absolllute.com/api/mega_hack/v9/install.json", headers={"User-Agent": ""})) as install_json:
-        version = next(bundle["version"] for package in json.load(install_json)["packages"] for bundle in package["bundles"] if bundle.get("geode"))
+    if len(sys.argv) > 1:
+        version = sys.argv[1]
+    else:
+        with urllib.request.urlopen(urllib.request.Request("https://absolllute.com/api/mega_hack/v9/install.json", headers={"User-Agent": ""})) as install_json:
+                version = next(bundle["version"] for package in json.load(install_json)["packages"] for bundle in package["bundles"] if bundle.get("geode"))
     print(f"- Downloading Mega Hack {version} -")
     with zipfile.ZipFile(io.BytesIO(urllib.request.urlopen(urllib.request.Request(f"https://absolllute.com/api/mega_hack/v9/files/{version}/absolllute.megahack.geode", headers={"User-Agent": ""})).read())) as original_zipfile, zipfile.ZipFile("absolllute.megahack.geode", "w") as patched_zipfile:
         print(f"Downloaded Mega Hack {version}")
@@ -44,16 +46,15 @@ if __name__ == "__main__":
         license_file.write(b'{"data":"eyJpZCI6ICIiLCAiZ3VpZDIiOiAiMEU4NDFGQTVCRkU1Q0U4RkM5MUVCMTFBREQxRENFRjY5NDA0NUJFRUFGQ0Y1MjFCRjQzNDFEMzk5N0MxQzIxOSJ9","sig":"","token":""}')
         print("Created license")
 
-    if "--copy" in sys.argv:
-        print(f"\n- Copying patched Mega Hack {version} -")
-        for geometrydash_exe_path in Path.home().rglob("GeometryDash.exe"):
-            geode_mods_path = geometrydash_exe_path.parent / "geode/mods"
-            geode_mods_path.mkdir(parents=True, exist_ok=True)
-            shutil.copy("absolllute.megahack.geode", geode_mods_path)
-            print(f"Copied patched Mega Hack {version} to {geode_mods_path}")
+    print(f"\n- Copying patched Mega Hack {version} -")
+    for geometrydash_exe_path in Path.home().rglob("GeometryDash.exe"):
+        geode_mods_path = geometrydash_exe_path.parent / "geode/mods"
+        geode_mods_path.mkdir(parents=True, exist_ok=True)
+        shutil.copy("absolllute.megahack.geode", geode_mods_path)
+        print(f"Copied patched Mega Hack {version} to {geode_mods_path}")
 
-        for appdata_local_geometrydash_path in Path.home().rglob("AppData/Local/GeometryDash"):
-            absolllute_megahack_path = appdata_local_geometrydash_path.parent / "absolllute.megahack"
-            absolllute_megahack_path.mkdir(parents=True, exist_ok=True)
-            shutil.copy("license", absolllute_megahack_path)
-            print(f"Copied license to {absolllute_megahack_path}")
+    for appdata_local_geometrydash_path in Path.home().rglob("AppData/Local/GeometryDash"):
+        absolllute_megahack_path = appdata_local_geometrydash_path.parent / "absolllute.megahack"
+        absolllute_megahack_path.mkdir(parents=True, exist_ok=True)
+        shutil.copy("license", absolllute_megahack_path)
+        print(f"Copied license to {absolllute_megahack_path}")
