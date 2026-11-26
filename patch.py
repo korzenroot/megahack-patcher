@@ -18,11 +18,16 @@ if __name__ == "__main__":
         data[start:start + len(patch)] = patch
         print(f"0x{start:X} patched with {patch.hex().upper()}")
 
+    with urllib.request.urlopen(urllib.request.Request("https://absolllute.com/api/mega_hack/v9/install.json", headers={"User-Agent": ""})) as install_json:
+        versions = [bundle["version"] for package in json.load(install_json)["packages"] for bundle in package["bundles"] if bundle.get("geode")]
     if len(sys.argv) > 1:
-        version = sys.argv[1]
+        if sys.argv[1] in versions:
+            version = sys.argv[1]
+        else:
+            print(versions)
+            sys.exit(1)
     else:
-        with urllib.request.urlopen(urllib.request.Request("https://absolllute.com/api/mega_hack/v9/install.json", headers={"User-Agent": ""})) as install_json:
-            version = next(bundle["version"] for package in json.load(install_json)["packages"] for bundle in package["bundles"] if bundle.get("geode"))
+        version = versions[0]
     print(f"- Downloading Mega Hack {version} -")
     with zipfile.ZipFile(io.BytesIO(urllib.request.urlopen(urllib.request.Request(f"https://absolllute.com/api/mega_hack/v9/files/{version}/absolllute.megahack.geode", headers={"User-Agent": ""})).read())) as original_zipfile, zipfile.ZipFile("absolllute.megahack.geode", "w") as patched_zipfile:
         print(f"Downloaded Mega Hack {version}")
