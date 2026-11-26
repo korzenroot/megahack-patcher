@@ -51,7 +51,7 @@ if __name__ == "__main__":
         license_file.write(b'{"data":"eyJpZCI6ICIiLCAiZ3VpZDIiOiAiMEU4NDFGQTVCRkU1Q0U4RkM5MUVCMTFBREQxRENFRjY5NDA0NUJFRUFGQ0Y1MjFCRjQzNDFEMzk5N0MxQzIxOSJ9","sig":"","token":""}')
         print("Created license")
 
-    print(f"\n- Copying patched Mega Hack {version} -")
+    print(f"\n- Installing patched Mega Hack {version} -")
     for geometrydash_exe_path in Path.home().rglob("GeometryDash.exe"):
         geode_mods_path = geometrydash_exe_path.parent / "geode/mods"
         geode_mods_path.mkdir(parents=True, exist_ok=True)
