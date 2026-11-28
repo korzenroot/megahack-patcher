@@ -9,10 +9,10 @@ import io
 def patch(data: bytearray, signature: bytes, patch: bytes):
     match = re.search(signature, data, re.DOTALL)
     if not match:
-        print(f"Failed to find {signature.hex().upper()}")
+        print(f"Failed to find {signature.hex(" ").upper()}")
     start = match.start()
     data[start:start + len(patch)] = patch
-    print(f"0x{start:X} patched with {patch.hex().upper()}")
+    print(f"0x{start:X} patched with {patch.hex(" ").upper()}")
 
 with urllib.request.urlopen(urllib.request.Request("https://absolllute.com/api/mega_hack/v9/install.json", headers={"User-Agent": ""})) as install_json:
     versions = [bundle["version"] for package in json.load(install_json)["packages"] for bundle in package["bundles"] if bundle.get("geode")]
