@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 import re
-import sys
 import urllib.request
 import json
+import sys
 import zipfile
 import io
 
@@ -11,7 +11,6 @@ if __name__ == "__main__":
         match = re.search(signature, data, re.DOTALL)
         if not match:
             print(f"Failed to find {signature.hex().upper()}")
-            sys.exit(1)
         start = match.start()
         data[start:start + len(patch)] = patch
         print(f"0x{start:X} patched with {patch.hex().upper()}")
