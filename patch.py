@@ -10,6 +10,7 @@ def patch(data: bytearray, signature: bytes, patch: bytes):
     match = re.search(signature, data, re.DOTALL)
     if not match:
         print(f"Failed to find {signature.hex(" ").upper()}")
+        return
     start = match.start()
     data[start:start + len(patch)] = patch
     print(f"0x{start:X} patched with {patch.hex(" ").upper()}")
