@@ -32,7 +32,7 @@ with zipfile.ZipFile(io.BytesIO(urllib.request.urlopen(urllib.request.Request(f"
         if name == "mod.json":
             print("\n- Patching mod.json -")
             mod_json = json.loads(original_bytes)
-            mod_json.get("dependencies", {}).pop("absolllute.installer")
+            mod_json["dependencies"].pop("absolllute.installer")
             original_bytes = json.dumps(mod_json).encode()
             print("absolllute.installer dependency patched")
         # xref "LICENSE"
